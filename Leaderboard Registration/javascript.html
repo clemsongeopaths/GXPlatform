@@ -1,0 +1,322 @@
+<script>
+
+
+  console.log("Starting javascript.html");
+  console.log("userName = " );
+  // Variables...
+  var aliasChkBox = document.getElementById('cbAlias');
+  var privacyBox = document.getElementById('privacyBox');
+  var aliasText = document.getElementById('alias');
+  var userIdText = document.getElementById('userId');
+  var filledForm = document.getElementById('registerForm');
+  var checkList = document.getElementById('list1');
+  var classes = document.getElementById('classes');
+  var liClasses = classes.getElementsByClassName('liclass');
+  var classesList = document.getElementById('classesList');
+  var submitted = false;
+
+  /* removed
+  var aliasTextFocused = false;
+
+  ///////////////////////////////////////////////////////////////
+  // Setup Alias text box to check for duplicate aliases in
+  // leaderboard table.
+  //
+
+  aliasText.onfocus = function(evt) {
+    console.log("aliasText onfocus trigger.");
+    aliasTextFocused = true;
+  };
+
+  aliasText.onblur = checkDuplicateAlias;
+  */
+
+
+  ///////////////////////////////////////////////////////////////
+  // Setup checkboxes for classes user can select.
+  //
+  checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+    if (classes.classList.contains('visible')){
+      classes.classList.remove('visible');
+      classes.style.display = "none";
+    }
+    else {
+      classes.classList.add('visible');
+      classes.style.display = "block";
+      classesList.style.display = "none";
+    }
+  };
+
+  classes.onblur = function(evt) {
+    classes.classList.remove('visible');
+  };
+
+
+
+  //
+  liClasses[0].onclick = function (evt) {
+    if (evt.target.checked) {
+      for (var i=1;i<liClasses.length;i++) {
+        liClasses[i].children[0].setAttribute("disabled","");
+      }
+      classesList.value = checkList.getElementsByClassName('anchor')[0].innerHTML = "None";
+    }
+    else {
+      for (var i=1;i<liClasses.length;i++) {
+        liClasses[i].children[0].removeAttribute("disabled");
+      }
+      classesList.value = checkList.getElementsByClassName('anchor')[0].innerHTML = getClasses();
+    }
+
+  };
+
+  for (var i=1;i<liClasses.length;i++) {
+    liClasses[i].onclick = function (evt) {
+      classesList.value = checkList.getElementsByClassName('anchor')[0].innerHTML = getClasses();
+    };
+  }
+
+  function getClasses() {
+      var chkList = [];
+      var classStr = "";
+
+      for (var i=1;i<liClasses.length;i++) {
+        if (liClasses[i].children[0].checked) {
+          chkList.push(liClasses[i].children[0].nextSibling.nodeValue);
+        }
+      }
+      chkList.sort();
+      for (var k=0;k<chkList.length;k++) classStr += chkList[k] + ",";
+      classStr = classStr.slice(0,-1);
+      return classStr;
+  }
+
+  ///////////////////////////////////////////////////////////////
+  // Setup a model dialog box for when a user checks the checkbox that states they want to use their
+  // user ID as their alias...
+  aliasChkBox.onchange = function () {
+
+    if (aliasChkBox.checked) {
+      privacyBox.style.display = "block";
+    }
+    else {
+      aliasText.value = "";
+    }
+
+  };
+
+  //
+  function useuserId(evt) {
+    var btn = evt.target;
+    if (btn.name == "no") {
+      aliasChkBox.checked = false;
+      aliasText.value = "";
+      privacyBox.style.display = "none";
+    }
+    else {
+      aliasChkBox.checked = true;
+      aliasText.value = userId.value;
+      privacyBox.style.display = "none";
+    }
+
+  }
+  /*
+  function checkDuplicateAlias(evt) {
+    console.log("testing onblur event...");
+    var aliasTextElement = document.getElementsByClassName("form-input-alias-row")[0].getElementsByClassName("formfield")[0];
+    //console.log("aliasTextElement = ", aliasTextElement);
+
+    if (aliasText.value) {
+      google.script.run
+       .withSuccessHandler(function(e) {
+         // e is true or false
+         //validateFormField("form-input-alias-row",e,"Duplicate Alias Entered.");
+       })
+       .withFailureHandler(function(e) {
+         console.log("failure... e = ", e);
+       })
+       .checkForDuplicateAlias(aliasText.value);
+    }
+  }
+  */
+  /*temp7
+  ///////////////////////////////////////////////////////////////
+  // Validate a field in the form
+  // All the validation does is to check to see if each field is not blank.
+  // If a field is not blank it's considered valid. More checking will
+  // probably be added later.
+  function validateFormField(form-input-alias-row,e,"Duplicate Alias Entered.")
+  */
+
+
+  ///////////////////////////////////////////////////////////////////
+  // Validate the form when it is submitted.
+  // All the validation does is to check to see if each field is not
+  // blank. If a field is not blank it's considered valid. More checking
+  // will probably be added later.
+  ///////////////////////////////////////////////////////////////////
+  function validateForm() {
+
+    ///////////////////////////////////////////////////////////////
+    // make sure the alias entered is a string value. If it's just
+    // a number it will cause a problem in the duplicate check when
+    // the toLowerCase() function is used.
+    //
+    aliasText.value = String(aliasText.value);
+
+    // Get all elements that have a classname of "form-row"
+    var formRows = document.getElementsByClassName("form-row");
+    var valid = true;
+    //console.log("formRows = ", formRows);
+
+    // Go through each of the "form-row" elements and check each input
+    // field to see if it's blank. Some "form-row"s have more than one
+    // input element which is why we have an inner loop.
+    for(var i=0;i<formRows.length;i++) {
+      var inputElement = formRows[i].getElementsByClassName("formfield");
+      var oneValid = true;
+
+      for (var j=0;j<inputElement.length;j++) {
+
+        if (!inputElement[j].value) {
+          oneValid = valid = false;
+          break;
+        }
+      }
+
+      if (oneValid) {
+        validateSingleFormRow(formRows[i].id,oneValid,"");
+      }
+      else {
+        validateSingleFormRow(formRows[i].id,oneValid,"Field can't be left blank");
+        submitted = false;
+      }
+    }
+
+    return valid;
+  }
+
+  function validateSingleFormRow(rowId, status, message) {
+    var formRow = document.getElementById(rowId);
+
+    if (status) {
+      formRow.className = "form-row form-valid-data";
+      formRow.getElementsByClassName("form-invalid-data-info")[0].innerHTML = "";
+    }
+    else {
+      formRow.className = "form-row form-invalid-data";
+      formRow.getElementsByClassName("form-invalid-data-info")[0].innerHTML = message;
+    }
+  }
+
+  /////////////////////////////////////////////////////////////
+  // Validate then submit the form.
+  /////////////////////////////////////////////////////////////
+  var submitForm = function(event) {
+
+    // This check will prevent users from registering multiple times by
+    // hitting the submit button quickly in succession.
+    if (!submitted) {
+      submitted = true;
+      $(document).ready(function() {
+        if (validateForm()) {
+          google.script.run
+           .withSuccessHandler(function(e) {
+             // e is true or false
+             console.log("e = ", e);
+             if (e) {
+               validateSingleFormRow("form-input-alias-row",false,"That alias is already in use. Pick another...");
+               submitted = false;
+             }
+             else {
+               validateSingleFormRow("form-input-alias-row",true,"");
+               console.log("submitting...");
+               submitBtn(filledForm);
+             }
+           })
+           .withFailureHandler(function(e) {
+             console.log("failure... e = ", e);
+           })
+           .checkForDuplicateAlias(aliasText.value);
+        }
+      });
+    }
+  };
+
+  ////////////////////////////////////////////////////////////////////////
+  //function called on submit. When form is submitted, javascript
+  //executes the processForm() function from Code.gs
+  //
+  //Parameters:
+  //
+  //frmData:    The html element object associated with the data
+  //            uploaded through the <form> tag in form.html
+  //
+  //Effect:
+  //
+  //sends frmData to processForm(), where files that were uploaded
+  //will be saved to google drive
+  ///////////////////////////////////////////////////////////////////////
+  function submitBtn(frmData) {
+      // turn on 'uploading' display
+      //document.getElementById('status').innerHTML = "Uploading. Please wait ...";
+      //document.getElementById('status').style.display = 'inline';
+
+      console.log('submitBtn(frmData)...');
+
+      // calls gs to process form input
+      // runs updateOutput if successful
+      google.script.run
+          .withSuccessHandler(registerSuccess)
+          .withFailureHandler(registerError)
+          .processForm(frmData);
+  };
+
+  //////////////////////////////////////////////////////////////////////
+  //function called after file upload is completed. Updates web page
+  //to display an "everything went ok" message
+  //
+  //Parameters: N/A
+  //
+  //Effect:
+  //
+  //updates the layout of the page to display "all clear" text
+  /////////////////////////////////////////////////////////////////////
+  function registerSuccess(e) {
+      //console.log('success in processForm(frmData). e = ' + e);
+      //console.log("redirecting...");
+
+
+      <?
+           Logger.log("<javascript.html> activityQueryLink = " + activityQueryLink);
+           if (activityQueryLink) {
+      ?>
+      <?!=   'window.location.replace("' + activityQueryLink + '");' ?>
+      <?!=   'window.top.location.replace("' + activityQueryLink + '");' ?>
+      <?
+           }
+           else {
+      ?>
+
+             //console.log("include successful html");
+      <?
+             successfulURL= ScriptApp.getService().getUrl() + '?r=successful';
+      ?>
+      <?!=   'window.top.location.replace("' + successfulURL + '");' ?>
+      <?
+           }
+      ?>
+
+
+  //    console.log("include successful html");
+  //    google.script.run
+  //      .withSuccessHandler(function(e){console.log("it worked. e = ", e);})
+  //      .newGetRequest('successful');
+
+  }
+
+  function registerError(e) {
+      console.log('error in processForm(frmData)');
+      console.log(e);
+  }
+</script>

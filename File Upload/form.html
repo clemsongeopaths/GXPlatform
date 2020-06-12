@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <!-- boot strap style sheet for upload button looks -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+    <!-- custom stylesheet -->
+    <?!= include('Stylesheet'); ?>
+        <!-- javascript -->
+        <?!= include('Javascript'); ?>
+            <!-- updates to image upload form -->
+            <?!= include('Validate'); ?>
+                <!-- spreadsheet id for listing classes and forms -->
+                <? var SHEET_ID = '<Google Sheet ID>' ?>
+                    <!-- load up JQuery -->
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="main-content">
+        <form class="form-validation" id="uploadForm">
+            <img class="logo" id="logo-id" src="<logo URL>" alt="Geopaths Logo" />
+            <br/> <br/>
+            <div class='facebook_login'>
+                <a id='login_dialog' href='<URL to Facebook login widget>'> Facebook Login </a>
+            </div>
+            <div class="form-title-row">
+                <h3>Activity Form</h3>
+            </div>
+
+            <!-- Scriptlets for opening sheet for Forms List and Class List -->
+            <? 
+                  var data = SpreadsheetApp
+                      .openById(SHEET_ID)
+                      .getActiveSheet()
+                      .getDataRange()
+                      .getValues(); 
+               ?>
+                <div class="form-row form-input-class-row">
+                    <label>
+                        <span>Class Name</span>
+
+                        <!-- class select box -->
+                        <select name="usrClass" class="selectField" id="selectClass" onChange="yayOrNay('usrClass')">
+                            <!-- select user class:  select options inserted here -->
+                            <?!= 
+                               "<option value=''></option>" 
+                            ?>
+                                <? 
+                                for (var i = 1; i < data.length; i++) {
+                                    // if blank, skip entry:
+                                    if (!(data[i][0] == "")) { 
+                            ?>
+                                    <?!= 
+                                        "<option value='" + data[i][0] + "'>" + data[i][0] + "</option>" 
+                            ?>
+                                        <?
+                                    }
+                                }
+                            ?>
+                        </select>
+                    </label>
+
+                    <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+                    <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                    <span class="form-invalid-data-info"></span>
+                </div>
+
+                <div class="form-row form-input-activity-row">
+                    <label>
+                        <span>Activity Name</span>
+
+                        <!--activity select box -->
+                        <select name="respForm" class="selectField" id="selectForm" onChange="checkForGCX(event)">
+                            <!-- select google form: select options inserted here -->
+                            <?!= 
+                                "<option value=''></option>" 
+                            ?>
+                                <? 
+                                for (var i=1; i < data.length; i++) {
+                                    // if blank, skip entry:
+                                    if (!(data[i][2] == "")) { 
+                            ?>
+                                    <?!= 
+                                        "<option value='" + data[i][2] + "'>" + data[i][2] + "</option>" 
+                            ?>
+                                        <?      
+                                    }
+                                }
+                            ?>
+                        </select>
+                    </label>
+
+                    <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+                    <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                    <span class="form-invalid-data-info"></span>
+                </div>
+
+                <div class="form-row form-input-selfie-row">
+                    <label>
+                        <div class="fileUpload btn btn-primary">
+                            <span id="btnSelfieText">Choose Geoselfie</span>
+                            <input id='fileUpload' name='fileUpload' type='file' class='upload' accept='image/*' onChange="loadSelfieImage(event)" />
+                        </div>
+                        <img class='imagePolaroid' id='selfieImagePolaroid' alt='Selfie Image' />
+                    </label>
+
+                    <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+                    <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                    <span class="form-invalid-data-info"></span>
+                </div>
+
+                <div class="form-row form-input-gcx-row" id="GCXImageUpload">
+                    <label>
+                        <div class="fileUpload btn btn-primary" id="GCXUploadButton">
+                            <span id="btnGCXText">GCX Screenshot</span>
+                            <input id='fileGCXUpload' name='fileGCXUpload' type='file' class='upload' accept='image/*' onChange="loadGCXImage(event)"
+                                fieldShown="false">
+                        </div>
+                        <img class='imagePolaroid' id='GCXImagePolaroid' name="GCXImagePolaroid" alt='GCX Image' />
+                    </label>
+
+                    <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+                    <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                    <span class="form-invalid-data-info"></span>
+                </div>
+
+                <br/>
+                <br/>
+                <!-- div for displaying upload progress -->
+                <div id='status' style='display: none; font-size: 20px'>
+                    <!-- div will be filled with innerHTML after submission -->
+                    Uploading. Please wait ...
+                </div>
+                <div class="form-row form-subbtn">
+                    <input type='button' id="submitButton" value='Submit Form' onclick='submitForm(event)' />
+                </div>
+                <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/>
+                <a href='<URL Link to google privacy policy form>'> privacy policy </a>
+        </form>
+
+    </div>
+</body>
+
+</html>

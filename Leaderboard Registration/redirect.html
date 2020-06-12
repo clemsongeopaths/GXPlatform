@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <script>
+            console.log("redirecting...");
+
+      <?     //Logger.log("<redirect.html> activityQueryLink = " + activityQueryLink); ?>
+      <?!=  'window.location.replace("' + activityQueryLink + '");' ?>
+      <?!=  'window.top.location.replace("' + activityQueryLink + '");' ?>
+    </script>
+  </head>
+  <body></body>
+</html>

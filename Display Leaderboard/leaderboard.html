@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <?!= include('style'); ?>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <script>
+  </script>
+  <div id="leaderboardBox" class="modal-old">
+    <!-- Modal content -->
+    <div class="modal-content-old">
+      <span> </span>
+      <img class="logo" id="logo-id" src="https://<url pointing to logo image>" alt="Geopaths Logo" />
+      <div class="titlediv">
+        <h1 class="titleh1">LEADERBOARD</h1>
+      </div>
+      <!---    <span class="close-old">&times;</span> -->
+      <br/>
+      <div class="datagrid">
+        <div class="lbtable">
+          <table id="lbtable">
+            <thead>
+              <tr>
+                <th class="firstRow col1">Rank</th>
+                <th class="col2">Alias</th>
+                <th class="col3">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?
+                var listLB = [];
+                for (var k=1;k<leaderBoardData.length;k++) {
+                  listLB.push({
+                    "lbs": leaderBoardData[k][5],
+                    "lba": leaderBoardData[k][1],
+                    "lbn": leaderBoardData[k][0]
+                  });
+                  //Logger.log("lbs = " + listLB[k-1].lbs);
+                  //Logger.log("lbn = " + listLB[k-1].lbn);
+                }
+
+                listLB.sort(function (a,b) {
+                  return (b.lbs - a.lbs);
+                });
+                for(var i=0;i<listLB.length;i++) {
+                  var leaderBoardRank = i+1;
+                  var leaderBoardAlias = listLB[i].lba;
+                  var leaderBoardScore = listLB[i].lbs;
+                  var leaderBoardName = listLB[i].lbn;
+                  var className = "";
+                  
+                  if (!(i%2)) className = "alt";
+                  if (leaderBoardName.toLowerCase() == userName) className = "usr";
+?>
+                <?!=                
+                  "<tr id='" + className + "' class='" + className + "'><td>" + leaderBoardRank +"</td><td>" + leaderBoardAlias + "</td><td>" + leaderBoardScore + "</td></tr>"
+?>
+                  <?
+                }
+?>
+                    <script>
+                      document.getElementById("usr").scrollIntoView();
+                    </script>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

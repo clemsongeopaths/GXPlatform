@@ -1,0 +1,136 @@
+<script>
+
+var checkForGCX = function(event) {
+    var selectForm = document.getElementById('selectForm');
+    var uploadForm = document.getElementById('uploadForm');
+    
+    yayOrNay('respForm');
+           
+    if (selectForm.value.indexOf("GCX") >= 0) {
+        document.getElementById('GCXImageUpload').style.visibility = 'visible';
+        uploadForm.fileGCXUpload.fieldShown = true;
+    }
+    else {
+        uploadForm.fileGCXUpload.value="";
+        uploadForm.fileGCXUpload.fieldShown = false;
+        document.getElementById('GCXImageUpload').style.visibility = 'hidden';
+        document.getElementById('GCXImagePolaroid').src = "";
+
+        yayOrNay('fileGCXUpload');
+
+    }
+};
+
+var loadSelfieImage = function(event) {
+    var selfieImagePolaroid = document.getElementById('selfieImagePolaroid');
+    selfieImagePolaroid.src = URL.createObjectURL(event.target.files[0]);
+    selfieImagePolaroid.style.display = 'inline';
+    yayOrNay('fileUpload');
+};
+
+
+var loadGCXImage = function(event) {
+    var GCXImagePolaroid = document.getElementById('GCXImagePolaroid');
+    var spanGCXSelect = document.getElementById('spanGCXSelect');
+    GCXImagePolaroid.src = URL.createObjectURL(event.target.files[0]);
+    GCXImagePolaroid.style.display = 'inline';
+    yayOrNay('fileGCXUpload');
+};
+
+
+var yayOrNay = function(inputName) {
+
+    var Yay = true;
+    var uploadForm = document.getElementById('uploadForm');
+    var submitIt = true;
+    var errorField = null;
+    var successField = null;
+        
+    if ((!inputName) || (inputName == "usrClass")) {
+        
+        if (uploadForm.usrClass.value == "") {
+            errorField = $('.form-input-class-row')
+            errorField.addClass('form-invalid-data');
+            errorField.find('.form-invalid-data-info').text('Please select a class.');
+ 
+            Yay = false;
+        }
+        else { 
+            successField = $('.form-input-class-row');
+            successField.removeClass('form-invalid-data');
+            successField.find('.form-invalid-data-info').text('');
+            successField.addClass('form-valid-data');
+        }
+    }
+
+    if ((!inputName) || (inputName == "respForm")) {
+     
+        if (uploadForm.respForm.value == "") {
+            errorField = $('.form-input-activity-row')
+            errorField.addClass('form-invalid-data');
+            errorField.find('.form-invalid-data-info').text('Please select an activity.');
+ 
+            Yay = false;
+        }
+        else { 
+            successField = $('.form-input-activity-row');
+            successField.removeClass('form-invalid-data');
+            successField.find('.form-invalid-data-info').text('');
+            successField.addClass('form-valid-data');
+        }
+    }
+    
+    if ((!inputName) || (inputName == "fileUpload")) {
+    
+        if (uploadForm.fileUpload.value == "") {
+            errorField = $('.form-input-selfie-row')
+            errorField.addClass('form-invalid-data');
+            errorField.find('.form-invalid-data-info').text('Please upload a selfie image.');
+ 
+            Yay = false;
+        }
+        else { 
+            successField = $('.form-input-selfie-row');
+            successField.removeClass('form-invalid-data');
+            successField.find('.form-invalid-data-info').text('');
+            successField.addClass('form-valid-data');
+        }
+    }
+    
+    if ((!inputName) || (inputName == "fileGCXUpload")) {
+    
+        if ((uploadForm.fileGCXUpload.fieldShown) && (uploadForm.fileGCXUpload.value == "")) {
+            errorField = $('.form-input-gcx-row')
+            errorField.addClass('form-invalid-data');
+            errorField.find('.form-invalid-data-info').text('Please upload an image for GCX.');
+
+            Yay = false;
+        }
+        else {
+            if (uploadForm.fileGCXUpload.fieldShown) {
+                successField = $('.form-input-gcx-row');
+                successField.removeClass('form-invalid-data');
+                successField.find('.form-invalid-data-info').text('');
+                successField.addClass('form-valid-data');
+            }
+        }
+    }
+        
+    return Yay;
+};
+
+
+var submitForm = function(event) {
+
+    $(document).ready(function() {
+    
+        if (yayOrNay()) {
+            uploadJs(uploadForm);
+        }
+    });
+
+    
+};
+
+</script>
+

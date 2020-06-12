@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    
+    <?!= include('style'); ?>
+    <?!= include('validate'); ?>
+   
+    <!-- load up JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="main-content">
+      <form class="form-validation" id="registerForm">
+        <img class="logo" id="logo-id" src="<URL to logo image" alt="Geopaths Logo"/> 
+        <br/>
+        <div class="form-title-row">
+          <h1>
+            Scoring and Leaderboard<br/>
+            Administration Panel
+          </h1>
+          <h7 style="color:red;">(for administrator use only)</h7>
+          <br/>
+          <br/>
+          <fieldset class="checkboxgroup">
+             <span></span>
+             <p>Choose which activities to start or stop scoring</p>
+             <br/> 
+             <label class="userMessage" id="userMessage"></label>
+<?          
+            //Logger.log("formLinksData.length = " + formLinksData.length);
+            for (var i=1;i<formLinksData.length;i++) {
+              var activityName = formLinksData[i][2];
+              var sheetId = formLinksData[i][5];
+              var isChecked = "";
+              var statusMsg = "INACTIVE";
+              var statusClass = "status inactive";
+              
+              if (sheetId) {
+                //Logger.log("sheetId = " + sheetId);
+                var spreadsheet = SpreadsheetApp.openById(sheetId);
+                if (spreadsheet) {
+                  var triggerList = ScriptApp.getUserTriggers(spreadsheet);
+                  
+                  // check to see if trigger has already been created 
+                  if (triggerList[0]) {
+                    triggerList.forEach(function(trigger) {
+                      if (trigger.getHandlerFunction() == "formSubmitOpen") {
+                        isChecked = "checked";
+                        statusMsg = "ACTIVE";
+                        statusClass = "status active";
+                      }
+                    });
+                  }
+                }
+              }
+?>
+<?!=         '<div class="checkboxdiv">'                                                                         ?>
+<?!=           '<input type="checkbox" onclick="checkTrigger(this)" sheetid="'+ sheetId +'" ' + isChecked + '>'  ?>
+<?!=           '<label class="checklabel">' + activityName +'</label>'                                           ?>
+<?!=           '<label class="' + statusClass + '">' + statusMsg + '</label>'                                    ?>
+<?!=           '<div class="adminButtons">'                                                                      ?>
+<?!=               '<label class="calcButton"  onclick="calculateSheetButton(this)"> Calculate </label>'         ?>
+<?!=               '<label class="archButton" onclick="archiveSheetButton(this)"> Archive </label>'              ?>
+<?!=           '</div>'                                                                                          ?>
+<?!=         '</div>'                                                                                            ?>
+<?
+            }
+?>
+
+          </fieldset>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+
+

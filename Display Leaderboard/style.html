@@ -1,0 +1,157 @@
+<style>
+/* The Modal (background) */
+.modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+   
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #f0f0f0;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    -webkit-border-radius: 10px; 
+    -moz-border-radius: 10px; border-radius: 10px;  
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Geopaths Logo and heading */ 
+.logo  {
+    display:right;
+    width: 50%;
+    mix-blend-mode: multiply;
+}
+
+.titlediv {
+    display:inline;
+    margin:auto;
+}
+.titleh1 {
+    font-size:250%;
+    text-shadow: 1px 1px #F66733;
+    color: #522D80;
+    position:inline;
+    left:30px;
+    bottom:30px;
+}
+
+/* The Leaderboard Table */
+
+.lbtable {
+  display:inline-block;
+  width: 100%;
+/*  
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 250px;
+*/
+}
+
+.datagrid table { 
+    border-collapse: collapse; 
+    text-align: left; 
+    
+} 
+
+.datagrid {
+    overflow: hidden;
+    font: normal 12px/150% Arial, Helvetica, sans-serif; 
+    background: #f0f0f0; 
+    -webkit-border-radius: 10px; 
+    -moz-border-radius: 10px; border-radius: 10px; 
+}
+
+
+.datagrid table td, .datagrid table th  { 
+    padding: 20px 5px;
+    text-align: center;
+}
+
+.col1 {
+    width: 30%;
+}
+
+.col2 {
+    width: 50%;
+}
+
+.col3 {
+    width: 100%;
+}
+    
+
+
+.datagrid table thead th {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #F66733), color-stop(1, #7F4614) );
+    background:-moz-linear-gradient( center top, #F66733 5%, #7F4614 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#A65B1A', endColorstr='#7F4614');
+    background-color:#A65B1A; 
+    color:#FFFFFF; font-size: 16px; 
+    font-weight: bold; 
+    border-left: 1px solid #BF691E;
+    } 
+
+.datagrid table thead th:first-child {
+    border: none;
+    width: 10px;
+}
+
+.datagrid table tbody td { 
+    color: #000000; 
+    border-left: 1px solid #D9CFB8;
+    font-size: 18px;
+    border-bottom: 1px solid #E1EEF4;
+    font-weight: bold;
+}
+
+.datagrid table tbody .alt td { 
+    background: #F0E5CC;
+    color: #000000;
+}
+
+.datagrid table tbody .usr { 
+    background: #e6e6ff;
+    color: #7F4614;
+    border: 3px solid #522D80;
+}
+
+.datagrid table tbody .usr td { 
+    border: none;
+}
+
+
+.datagrid table tbody td:first-child {
+    border: none; 
+}
+
+.datagrid table tbody tr:last-child td { 
+    border-bottom: none; 
+}
+
+</style>

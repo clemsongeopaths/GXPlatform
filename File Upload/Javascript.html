@@ -1,0 +1,134 @@
+<script>
+  /*
+  
+  records window location. Used for debugging purposes
+  
+  */
+  function debugUrl(location) {
+    console.log("location:");
+    console.log(location.parameters);
+    console.log(location.hash);
+    if (location.hash === null) {
+      console.log('hash null');
+    } else if (location.hash === '') {
+      console.log('hash empty string');
+    }
+  }
+
+  function doLogin(location) {
+
+    var hash = location.hash;
+    console.log("hash: " + hash);
+
+    // if hash is empty (i.e. no login)
+    if (hash === '') {
+      console.log('option "no login" ran');
+    } else {
+      console.log('option "facebook login" ran');
+      // parse the hash:
+      var urlTkn = hash.split("&", 2);   // login token sentence
+      var fbAcsTkn = urlTkn[0].split("=", 2); // token variable
+      var finalTkn = fbAcsTkn[1];            // token value
+
+      var scndExpire = hash.substring(hash.indexOf("_in=") + 4, hash.length);
+      console.log("scndExpire: " + scndExpire);
+
+      // update login logo to show user that they are currently logged in:
+      document.getElementById('login_dialog').innerHTML = 'Facebook Login (logged in)';
+
+      google.script.run
+        .withFailureHandler(loginFailure)
+        .withSuccessHandler(loginSuccess)
+        .processFB_LogIn(finalTkn, scndExpire);
+    }
+  }
+  /*
+  
+  Parses URL and checks for facebook login. Performs checking facebook
+  login credentials if user is logged in through facebook
+  
+  Parameters: N/A
+  
+  Effect:
+  
+  checks if user is logged in. Verifies credentials if logged in
+  
+  */
+  window.onload = function () {
+
+    // debug:
+    // google.script.url.getLocation(debugUrl);
+    // login:
+    google.script.url.getLocation(doLogin);
+  }
+
+  /*
+  
+  function called on submit. When form is submitted, javascript
+  executes the processForm() function from Code.gs
+  
+  Parameters:
+  
+  frmData:    The html element object associated with the data
+              uploaded through the <form> tag in form.html
+              
+  Effect:
+  
+  sends frmData to processForm(), where files that were uploaded
+  will be saved to google drive
+  
+  */
+  function uploadJs(frmData) {
+    // turn on 'uploading' display
+    document.getElementById('status').innerHTML = "Uploading. Please wait ...";
+    document.getElementById('status').style.display = 'inline';
+
+    console.log('uploadJs()...');
+
+    // calls gs to process form input
+    // runs updateOutput if successful
+    google.script.run
+      .withSuccessHandler(updateOutput)
+      .withFailureHandler(updateOutput_error)
+      .processForm(frmData)
+  };
+
+  /*
+  
+  function called after file upload is completed. Updates web page
+  to display an "everything went ok" message
+  
+  Parameters: N/A
+  
+  Effect:
+  
+  updates the layout of the page to display "all clear" text
+  
+  */
+  function updateOutput() {
+    console.log('success in updateOutput()');
+    document.getElementById('status').innerHTML = 'Success!';
+    document.getElementById('status').innerHTML +=
+      '<br/> <br/> <a href="<Link URL to the Leaderboards page>"> Visit The Leaderboard </a>';
+    document.getElementById('submitButton').disabled = true;
+  };
+
+  function updateOutput_error(e) {
+    console.log('error in updatOutput_error()');
+    console.log(e);
+    document.getElementById('status').innerHTML = 'Error in File upload. Unsupported file type';
+  };
+
+  function loginSuccess() {
+    document.getElementById('fb_post_tags').style.display = 'inline';
+    document.getElementById('fbCheckBox').style.display = 'inline';
+    document.getElementById('fbTextBox').style.display = 'inline';
+  }
+
+  function loginFailure() {
+    console.log("login failed");
+    var elem = document.getElementById('fb_post_tags');
+    elem.innerHTML = "<b> Failed to login to Facebook </b>"
+    elem.style = "display: inline"
+  }
+</script>

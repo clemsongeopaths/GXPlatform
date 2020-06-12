@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <!-- load up JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/dojo/1.12.1/dojo/dojo.js"></script>
+  </head>
+  <body>
+    <?!= HtmlService.createTemplateFromFile('register').evaluate().getContent(); ?>
+    <?!= HtmlService.createTemplateFromFile('javascript').evaluate().getContent(); ?>
+  </body>
+</html>

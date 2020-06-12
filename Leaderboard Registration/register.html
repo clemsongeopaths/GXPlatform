@@ -1,0 +1,167 @@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <?!= include('regStyle'); ?>
+    <?!= include('privacy'); ?>
+    
+    <div class="main-content">
+      <form class="form-validation" id="registerForm">
+        <img class="logo" id="logo-id" src="<URL to Logo image>" alt="Geopaths Logo"/> 
+        <br/> <br/>
+        <div class="form-title-row">
+          <h3>Leaderboard Registration Form</h3>
+        </div>
+        
+        <!----------------------------------------------
+               The full name input text elements...
+        ------------------------------------------------>
+        <div class="form-row" id="form-input-name-row" >
+          <label>
+            <span>Full Name</span>
+<? var fname = nameData["FirstName"]; ?>
+<? var lname = nameData["LastName"]; ?>
+
+<?!=        
+              '<input id="firstName" name="firstName" class="formfield element text" maxlength="255" size="8" value="'+ fname +'" style="margin-right:2px;">' 
+?>
+          </label>
+          <label>
+<?!=
+
+            '<input id="lastName" type="text" name="lastName" class="formfield element text" maxlength="255" size="14" value="'+ lname +'">'
+?>
+          </label>
+         
+
+          <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+          <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+          <span class="form-invalid-data-info"></span>
+          <br/>
+          <label>
+              <span> </span>
+              <label style="font-size:10px; margin-right: 60px;">First</label>
+              <label style="font-size:10px; margin-left: 25px;">Last</label>
+          </label>
+        </div>
+
+        <!--------------------------------------------
+             The class list checkboxes...
+        ---------------------------------------------->
+        <div class="form-row" id="form-input-class-row">
+          <label>
+            <span>Class Name</span>
+            
+<? var cname = nameData["Class"]; ?>
+
+            <div id="list1" class="dropdown-check-list" tabindex="100">
+<?!= 
+              "<span class='anchor' style='height: 28px; width: 240px; text-align: left;'>" + cname + "</span>"
+?>
+              <ul id="classes" class="classes">
+<?
+              Logger.log("cname = " + cname);
+              var selectedString = "";
+?>
+              <!-- 
+                   Next form element that is hidden because we represent it with a dropdown checklist.
+                   It will be used when processing the form.
+              -->
+              <input type='text' class='formfield' name='classesList' id='classesList' value='' style='display:none;'/>
+              
+              <!-- 
+                   The next element is a dummy <li> element to fix a bug that I couldn't figure out with the first node
+                   of the checkbox list. I think it has to do with CSS styling, but I didn't have time to 
+                   fix it.
+              -->
+              
+              <li><input type='checkbox' style="display:none;"/></li>
+<?
+              classList.forEach(function(className) {
+                Logger.log("className = " + className);
+                if (cname.toLowerCase().lastIndexOf(className.toLowerCase()) >= 0) {
+                  Logger.log("cname = " + cname);
+                  selectedString = "checked";
+                }
+?>
+<?!= 
+                "<li class='liclass'><input type='checkbox'  " + selectedString + "/>" + className + "</li>"
+?>        
+<?
+                selectedString = "";
+              });
+?>
+              </ul>
+            </div>
+          </label>
+          <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+          <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+          <span class="form-invalid-data-info"></span>
+        </div>                
+
+
+        <!--------------------------------------------
+             The user ID prefilled textbox...
+        ---------------------------------------------->
+        <div class="form-row" id="form-userId-row">
+          <label>
+            <span>User ID</span>
+<?!=             
+            "<input id='userId' name='userId' class='formfield element text' maxlength='50' size='20' value='"+userName+"' readonly>"
+?>
+          </label>
+          <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+          <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+          <span class="form-invalid-data-info"></span>
+          <br/>
+        </div>
+                
+                
+                
+        <!--------------------------------------------
+             The user alias textbox...
+        ---------------------------------------------->                
+        <div class="form-row" id="form-input-alias-row">
+          <label>
+            <span>Alias</span>
+            
+<? var aname = nameData["Alias"]; ?>
+<?!=
+            '<input id="alias" type="text" name="alias" class="formfield element text" maxlength="50" size="20" value="'+ aname +'">'
+?>
+          </label>
+          <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+          <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+          <span class="form-invalid-data-info"></span>
+          <br/>
+          <label>
+            <span> </span>
+<?
+  var checkValue = ""
+  if (aname == userName) {
+    checkValue = "checked";
+  }
+?>
+<?!=
+            '<input type="checkbox" id="cbAlias" name="useUserId" value="true" '+ checkValue +'>  Use your User ID as alias'
+?>
+          </label>
+        </div>
+        <br/>
+        <br/>
+        <!-- div for displaying messagess -->
+        <!-- div will be filled with innerHTML after submission -->
+        <div id='status' style='display: none; font-size: 20px'>
+        </div>
+        <div class="form-subbtn">
+            <label>
+              <span> </span>
+              <input type='button' id="submitButton" value='Submit' onclick='submitForm(event)' style="display:inline; margin:5px;"/>
+<?!=
+              "<input type='button' id='contineButton' value='Continue' onclick='continueToForm(event)' style='display: " + nameDisplay + "; margin:5px;'/>"
+?>
+            </label>
+        </div>
+      </form>
+    </div>
+
+
+

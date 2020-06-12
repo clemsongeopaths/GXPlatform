@@ -1,0 +1,213 @@
+<script>
+  ///////////////////////////////////////////////////////////////////
+  //
+  // Create and Delete Triggers
+  //
+  ///////////////////////////////////////////////////////////////////
+  function checkTrigger(evt) {
+    console.log("checkTrigger evt = ", evt);
+    console.log("sheetid = " + evt.getAttribute("sheetid"));
+    var userMessage = (document.getElementById("userMessage").innerHTML = "");
+
+    // disable the checkbox until one of the handler functions
+    // are run. It will be re-enabled both with a success or failure.
+    evt.disabled = true;
+    evt.nextSibling.nextSibling.className = "status processing";
+    evt.nextSibling.nextSibling.innerHTML = "PROCESSING";
+
+    if (evt.checked) {
+      google.script.run
+        .withSuccessHandler(formSuccess)
+        .withUserObject(evt)
+        .withFailureHandler(formFailure)
+        .withUserObject(evt)
+        .openFormSubmitTrigger(evt.getAttribute("sheetid"));
+    } else {
+      google.script.run
+        .withSuccessHandler(formSuccess)
+        .withUserObject(evt)
+        .withFailureHandler(formFailure)
+        .withUserObject(evt)
+        .closeFormSubmitTrigger(
+          evt.getAttribute("sheetid"),
+          evt.getAttribute("triggerid")
+        );
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function formSuccess(statusActive, domCheckbox) {
+    console.log("successful script run");
+    var userMessage = document.getElementById("userMessage");
+
+    if (statusActive) {
+      domCheckbox.nextSibling.nextSibling.className = "status active";
+      domCheckbox.nextSibling.nextSibling.innerHTML = "ACTIVE";
+      userMessage.innerHTML = "";
+    } else {
+      domCheckbox.checked = false;
+      domCheckbox.nextSibling.nextSibling.className = "status inactive";
+      domCheckbox.nextSibling.nextSibling.innerHTML = "INACTIVE";
+      domCheckbox.disabled = false;
+      document.getElementById("userMessage").innerHTML = "";
+    }
+    domCheckbox.disabled = false;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function formFailure(e, domCheckbox) {
+    console.log("script didn't work :(   ");
+
+    domCheckbox.checked = false;
+    domCheckbox.nextSibling.nextSibling.className = "status inactive";
+    domCheckbox.nextSibling.nextSibling.innerHTML = "INACTIVE";
+    domCheckbox.disabled = false;
+    document.getElementById("userMessage").innerHTML = e;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  //Archive response spreadsheets...
+  //
+  ///////////////////////////////////////////////////////////////////////////
+  function archiveSheetButton(evt) {
+    //console.log("archiveSheet() starting...",evt);
+    var sheetId = evt.parentNode.parentNode.firstElementChild.getAttribute(
+      "sheetid"
+    );
+    var folderId = "<Google Folder ID>";
+    var userMessage = document.getElementById("userMessage");
+    var adminButtons = evt.parentNode.childNodes;
+
+    adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button", "Button-disabled");
+      btn.onclickStored = btn.onclick;
+      btn.onclick = null;
+    });
+
+    userMessage.className = "userMessage processing";
+    userMessage.innerHTML = "Copying the spreadsheet to archive folder.";
+
+    google.script.run
+      .withSuccessHandler(archiveResponseSheetSuccess)
+      .withUserObject({
+        userMessage: userMessage,
+        adminButtons: adminButtons,
+      })
+      .withFailureHandler(archiveResponseSheetFailure)
+      .withUserObject({
+        userMessage: userMessage,
+        adminButtons: adminButtons,
+      })
+      .archiveResponseSheet(sheetId, folderId);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function archiveResponseSheetSuccess(e, tags) {
+    console.log("archiveResponseSheetSuccess() starting...");
+
+    tags.adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button-disabled", "Button");
+      btn.onclick = btn.onclickStored;
+    });
+
+    tags.userMessage.className = "userMessage active";
+    tags.userMessage.innerHTML = "Created archive file '" + e + "'";
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function archiveResponseSheetFailure(e, tags) {
+    console.log("archiveResponseSheetFailure() starting...");
+
+    tags.adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button-disabled", "Button");
+      btn.onclick = btn.onclickStored;
+    });
+
+    tags.userMessage.className = "userMessage inactive";
+    tags.userMessage.innerHTML = e.message;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function calculateSheetButton(evt) {
+    console.log("calculateSheetButtont() starting...", evt);
+    var sheetId = evt.parentNode.parentNode.firstElementChild.getAttribute(
+      "sheetid"
+    );
+    var userMessage = document.getElementById("userMessage");
+    var adminButtons = evt.parentNode.childNodes;
+
+    adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button", "Button-disabled");
+      btn.onclickStored = btn.onclick;
+      btn.onclick = null;
+    });
+
+    userMessage.className = "userMessage processing";
+    userMessage.innerHTML =
+      "Calculating scores for all users in this spreadsheet.";
+
+    google.script.run
+      .withSuccessHandler(calculateSheetSuccess)
+      .withUserObject({
+        userMessage: userMessage,
+        adminButtons: adminButtons,
+      })
+      .withFailureHandler(calculateSheetFailure)
+      .withUserObject({
+        userMessage: userMessage,
+        adminButtons: adminButtons,
+      })
+      .gradeAllUsers(sheetId);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function calculateSheetSuccess(e, tags) {
+    console.log("calculateSheetSuccess() starting...");
+
+    tags.adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button-disabled", "Button");
+      btn.onclick = btn.onclickStored;
+    });
+
+    tags.userMessage.className = "userMessage active";
+    tags.userMessage.innerHTML = "All Users have been scored.";
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function calculateSheetFailure(e, tags) {
+    console.log("calculateSheetFailure() starting...");
+
+    tags.adminButtons.forEach(function (btn) {
+      btn.className = btn.className.replace("Button-disabled", "Button");
+      btn.onclick = btn.onclickStored;
+    });
+
+    tags.userMessage.className = "userMessage inactive";
+    tags.userMessage.innerHTML =
+      "There was an error when trying to calculate scores -<br/> '" +
+      e.message +
+      "'";
+  }
+</script>
